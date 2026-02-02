@@ -1,6 +1,8 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorVault } from "../target/types/anchor_vault";
+import { assert } from "chai";
+
 
 describe("anchor-vault", () => {
   // Configure the client to use the local cluster.
@@ -10,6 +12,7 @@ describe("anchor-vault", () => {
   const program = anchor.workspace.anchorVault as Program<AnchorVault>;
 
   const signer = new anchor.web3.Keypair()
+  const user_2 = new anchor.web3.Keypair()
 
   const [vaultState, stateBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("vault_state"),signer.publicKey.toBuffer()],
@@ -78,6 +81,9 @@ before(async() => {
       systemProgram:anchor.web3.SystemProgram.programId,
     }).signers([signer]).rpc();
 
+    assert.equal(await provider.connection.getBalance(vaultState),0);
+    assert.equal(await provider.connection.getBalance(vault),0);
+    
     console.log("Transaction signature", tx);
   })
 });
