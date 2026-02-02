@@ -32,6 +32,8 @@ anchor test
 anchor test --skip-local-validator
 ```
 
+![Test suite output](tests_done.png)
+
 ## Project layout
 
 - `programs/anchor-vault/src/lib.rs` — Program logic (initialize, deposit, withdraw, close).
