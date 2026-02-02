@@ -55,4 +55,29 @@ before(async() => {
 
     console.log("Transaction signature", tx);
   })
+
+  it("Withdraw from the vault!", async () => {
+    const amount = 1*anchor.web3.LAMPORTS_PER_SOL;
+    const tx = await program.methods.withdraw(new anchor.BN(amount)).accountsStrict({
+      user:signer.publicKey,
+      vaultState:vaultState,
+      vault:vault,
+      systemProgram:anchor.web3.SystemProgram.programId,
+    }).signers([signer]).rpc();
+
+    console.log("Transaction signature", tx);
+  })
+
+
+
+  it("Close the vault!", async () => {
+    const tx = await program.methods.close().accountsStrict({
+      user:signer.publicKey,
+      vaultState:vaultState,
+      vault:vault,
+      systemProgram:anchor.web3.SystemProgram.programId,
+    }).signers([signer]).rpc();
+
+    console.log("Transaction signature", tx);
+  })
 });
