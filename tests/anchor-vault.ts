@@ -1,8 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorVault } from "../target/types/anchor_vault";
-import { assert } from "chai";
-
+import { expect, assert } from "chai";
 
 describe("anchor-vault", () => {
   // Configure the client to use the local cluster.
@@ -44,6 +43,9 @@ before(async() => {
     }).signers([signer]).rpc();
 
     console.log("Transaction signature", tx);
+    const state = await program.account.vaultState.fetch(vaultState);
+    expect(state.stateBump).to.equal(stateBump);
+    expect(state.vaultBump).to.equal(vaultBump);
   });
 
 
@@ -57,6 +59,7 @@ before(async() => {
     }).signers([signer]).rpc();
 
     console.log("Transaction signature", tx);
+    assert.equal(await provider.connection.getBalance(vault), amount);
   })
 
   it("Withdraw from the vault!", async () => {
@@ -69,6 +72,7 @@ before(async() => {
     }).signers([signer]).rpc();
 
     console.log("Transaction signature", tx);
+    assert.equal(await provider.connection.getBalance(vault), 0);
   })
 
 
@@ -83,6 +87,7 @@ before(async() => {
 
     assert.equal(await provider.connection.getBalance(vaultState),0);
     assert.equal(await provider.connection.getBalance(vault),0);
+    expect(await provider.connection.getAccountInfo(vaultState)).to.be.null;
     
     console.log("Transaction signature", tx);
   })
