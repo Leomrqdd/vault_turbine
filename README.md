@@ -31,7 +31,7 @@ Run the test suite (requires a solana local validator or surfpool):
 anchor test
 ```
 
-![Test suite output](tests_done.png)
+![Test suite output](tests_done_V2.png)
 
 ## Project layout
 
