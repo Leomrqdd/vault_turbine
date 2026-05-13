@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { Program, AnchorError } from "@coral-xyz/anchor";
 import { AnchorVault } from "../target/types/anchor_vault";
 import { expect, assert } from "chai";
 
@@ -61,6 +61,25 @@ before(async() => {
     console.log("Transaction signature", tx);
     assert.equal(await provider.connection.getBalance(vault), amount);
   })
+
+  it("Should fail to withdraw if the user is not authorized!", async () => {
+    try {
+      const amount = 1*anchor.web3.LAMPORTS_PER_SOL;
+      await program.methods.withdraw(new anchor.BN(amount)).accountsStrict({
+        user:user_2.publicKey,
+        vaultState:vaultState,
+        vault:vault,
+        systemProgram:anchor.web3.SystemProgram.programId,
+      }).signers([user_2]).rpc();
+    } catch (error) {
+      expect(error).to.be.instanceOf(AnchorError);
+      const anchorError = error as AnchorError;
+      expect(anchorError.error.errorCode.code).to.equal("ConstraintSeeds");
+      return;
+    }
+    assert.fail("Withdrawal should have failed");
+  }
+  );
 
   it("Withdraw from the vault!", async () => {
     const amount = 1*anchor.web3.LAMPORTS_PER_SOL;
