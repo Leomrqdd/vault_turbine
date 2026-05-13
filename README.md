@@ -29,7 +29,6 @@ Run the test suite (requires a solana local validator or surfpool):
 
 ```bash
 anchor test
-anchor test --skip-local-validator
 ```
 
 ![Test suite output](tests_done.png)
